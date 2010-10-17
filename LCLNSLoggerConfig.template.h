@@ -36,3 +36,6 @@
     <UniquePrefix>LCLNSLogger
 #endif
 
+// Tell LCLNSLogger to prefix the log message with the current function name.
+#define _LCLNSLogger_PrefixLogMessageWithFunctionName /* (1 or 0) */           \
+    1

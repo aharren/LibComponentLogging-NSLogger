@@ -72,6 +72,17 @@
 
 // Define the _lcl_logger macro which integrates LCLNSLogger as a logging
 // back-end for LibComponentLogging.
+#if (_LCLNSLogger_PrefixLogMessageWithFunctionName) == 1
+#define _lcl_logger(_component, _level, _format, ...) {                        \
+    NSAutoreleasePool *_lcl_logger_pool = [[NSAutoreleasePool alloc] init];    \
+    [LCLNSLogger logWithComponent:_component                                   \
+                            level:_level                                       \
+                           format:@"%s\n" _format,                             \
+                                  __FUNCTION__,                                \
+                               ## __VA_ARGS__];                                \
+    [_lcl_logger_pool release];                                                \
+}
+#else
 #define _lcl_logger(_component, _level, _format, ...) {                        \
     NSAutoreleasePool *_lcl_logger_pool = [[NSAutoreleasePool alloc] init];    \
     [LCLNSLogger logWithComponent:_component                                   \
@@ -80,4 +91,5 @@
                                ## __VA_ARGS__];                                \
     [_lcl_logger_pool release];                                                \
 }
+#endif
 

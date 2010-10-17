@@ -37,6 +37,10 @@
 #error  'LCLNSLogger' must be defined in LCLNSLoggerConfig.h
 #endif
 
+#ifndef _LCLNSLogger_PrefixLogMessageWithFunctionName
+#error  '_LCLNSLogger_PrefixLogMessageWithFunctionName' must be defined in LCLNSLoggerConfig.h
+#endif
+
 
 //
 // Fields.
