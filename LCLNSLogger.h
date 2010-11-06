@@ -50,6 +50,11 @@
 //
 // You can download them from here: http://github.com/fpillet/NSLogger
 //
+// In your project, you must link the following frameworks:
+//
+//   SystemConfiguration.framework
+//   CFNetwork.framework / CoreServices.framework
+//
 
 
 #import <Foundation/Foundation.h>
