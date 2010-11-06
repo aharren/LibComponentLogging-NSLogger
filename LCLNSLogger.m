@@ -37,8 +37,16 @@
 #error  'LCLNSLogger' must be defined in LCLNSLoggerConfig.h
 #endif
 
-#ifndef _LCLNSLogger_PrefixLogMessageWithFunctionName
-#error  '_LCLNSLogger_PrefixLogMessageWithFunctionName' must be defined in LCLNSLoggerConfig.h
+#ifndef _LCLNSLogger_ShowFileNames
+#error  '_LCLNSLogger_ShowFileNames' must be defined in LCLNSLoggerConfig.h
+#endif
+
+#ifndef _LCLNSLogger_ShowLineNumbers
+#error  '_LCLNSLogger_ShowLineNumbers' must be defined in LCLNSLoggerConfig.h
+#endif
+
+#ifndef _LCLNSLogger_ShowFunctionNames
+#error  '_LCLNSLogger_ShowFunctionNames' must be defined in LCLNSLoggerConfig.h
 #endif
 
 
@@ -57,6 +65,18 @@ NSString *_LCLNSLogger_identifier[] = {
 #   include "lcl_config_components.h"
 #   undef   _lcl_component
 };
+
+// YES, if the file name should be shown.
+static BOOL _LCLNSLogger_showFileName = NO;
+
+// YES, if the line number should be shown.
+static BOOL _LCLNSLogger_showLineNumber = NO;
+
+// YES, if the function name should be shown.
+static BOOL _LCLNSLogger_showFunctionName = NO;
+
+// YES, if the prefix should be shown.
+static BOOL _LCLNSLogger_showPrefx = NO;
 
 
 @implementation LCLNSLogger
@@ -79,6 +99,18 @@ NSString *_LCLNSLogger_identifier[] = {
     if (self != [LCLNSLogger class])
         return;
     
+    // get whether we should show file names
+    _LCLNSLogger_showFileName = (_LCLNSLogger_ShowFileNames);
+    
+    // get whether we should show line numbers
+    _LCLNSLogger_showLineNumber = (_LCLNSLogger_ShowLineNumbers);
+    
+    // get whether we should show function names
+    _LCLNSLogger_showFunctionName = (_LCLNSLogger_ShowFunctionNames);
+    
+    // calculate whether the prefix should be shown
+    _LCLNSLogger_showPrefx = _LCLNSLogger_showFileName || _LCLNSLogger_showLineNumber || _LCLNSLogger_showFunctionName;
+    
     // create and remember the logger instance
     _LCLNSLogger_logger = LoggerInit();
     
@@ -87,7 +119,7 @@ NSString *_LCLNSLogger_identifier[] = {
     const BOOL bufferLocallyUntilConnection = YES;
     const BOOL browseBonjour = YES;
     const BOOL browseOnlyLocalDomains = YES;
-
+    
     // configure the logger
     LoggerSetOptions(_LCLNSLogger_logger, logToConsole, bufferLocallyUntilConnection, browseBonjour, browseOnlyLocalDomains);
     
@@ -103,12 +135,49 @@ NSString *_LCLNSLogger_identifier[] = {
 
 // Writes the given log message to the log.
 + (void)logWithComponent:(_lcl_component_t)component level:(uint32_t)level
+                    path:(const char *)path_c line:(uint32_t)line
+                function:(const char *)function_c
                   format:(NSString *)format, ... {
-    NSString *domain = _LCLNSLogger_identifier[component];
+    // get settings
+    const BOOL show_file = _LCLNSLogger_showFileName;
+    const BOOL show_line = _LCLNSLogger_showLineNumber;
+    const BOOL show_function = _LCLNSLogger_showFunctionName;
+    const BOOL show_prefix = _LCLNSLogger_showPrefx;
+    
+    // get file name from path
+    const char *file_c = NULL;
+    if (show_file) {
+        file_c = (path_c != NULL) ? strrchr(path_c, '/') : NULL;
+        file_c = (file_c != NULL) ? (file_c + 1) : (path_c);
+    }
+    
+    // get line
+    char line_c[11];
+    if (show_line) {
+        snprintf(line_c, sizeof(line_c), "%u", line);
+        line_c[sizeof(line_c) - 1] = '\0';
+    }
+    
+    // create message with prefix
     va_list args;
     va_start(args, format);
-    LogMessageTo_va(_LCLNSLogger_logger, domain, (int)level, format, args);
+    NSString *message = [[[NSString alloc] initWithFormat:format arguments:args] autorelease];
     va_end(args);
+    
+    // get domain
+    NSString *domain = _LCLNSLogger_identifier[component];
+    
+    // write log message
+    LogMessageTo(_LCLNSLogger_logger, domain, (int)level, @"%s%s%s%s%s%s%s%@",
+                 /* %s */ show_file ? file_c : "",
+                 /* %s */ show_file ? ":" : "",
+                 /* %s */ show_line ? line_c : "",
+                 /* %s */ show_line ? ":" : "",
+                 /* %s */ show_function ? function_c : "",
+                 /* %s */ show_function ? ":" : "",
+                 /* %s */ show_prefix ? "\n" : "",
+                 /* %@ */ message
+                 );
 }
 
 @end

@@ -25,7 +25,7 @@
 
 #define _LCLNSLOGGER_VERSION_MAJOR  0
 #define _LCLNSLOGGER_VERSION_MINOR  9
-#define _LCLNSLOGGER_VERSION_BUILD  1
+#define _LCLNSLOGGER_VERSION_BUILD  2
 #define _LCLNSLOGGER_VERSION_SUFFIX "-dev"
 
 //
@@ -35,6 +35,18 @@
 // the logging client from Florent Pillet's NSLogger project.
 //
 // See http://github.com/fpillet/NSLogger for more details about NSLogger.
+//
+// LCLNSLogger is configured via the following #defines in LCLNSLoggerConfig.h
+// (see #import below):
+//
+// - Show file names in the log messages? (type BOOL)
+//   #define _LCLNSLogger_ShowFileNames <definition>
+//
+// - Show line numbers in the log messages? (type BOOL)
+//   #define _LCLNSLogger_ShowLineNumbers <definition>
+//
+// - Show function names in the log messages? (type BOOL)
+//   #define _LCLNSLogger_ShowFunctionNames <definition>
 //
 // For using LCLNSLogger with LibComponentLogging, simply add an
 //   #import "LCLNSLogger.h"
@@ -73,7 +85,9 @@
 
 // Writes the given log message to the log.
 + (void)logWithComponent:(_lcl_component_t)component level:(uint32_t)level
-                  format:(NSString *)format, ... __attribute__((format(__NSString__, 3, 4)));
+                    path:(const char *)path line:(uint32_t)line
+                function:(const char *)function
+                  format:(NSString *)format, ... __attribute__((format(__NSString__, 6, 7)));
 
 
 @end
@@ -81,24 +95,15 @@
 
 // Define the _lcl_logger macro which integrates LCLNSLogger as a logging
 // back-end for LibComponentLogging.
-#if (_LCLNSLogger_PrefixLogMessageWithFunctionName) == 1
 #define _lcl_logger(_component, _level, _format, ...) {                        \
     NSAutoreleasePool *_lcl_logger_pool = [[NSAutoreleasePool alloc] init];    \
     [LCLNSLogger logWithComponent:_component                                   \
                             level:_level                                       \
-                           format:@"%s\n" _format,                             \
-                                  __FUNCTION__,                                \
-                               ## __VA_ARGS__];                                \
-    [_lcl_logger_pool release];                                                \
-}
-#else
-#define _lcl_logger(_component, _level, _format, ...) {                        \
-    NSAutoreleasePool *_lcl_logger_pool = [[NSAutoreleasePool alloc] init];    \
-    [LCLNSLogger logWithComponent:_component                                   \
-                            level:_level                                       \
+                             path:__FILE__                                     \
+                             line:__LINE__                                     \
+                         function:__PRETTY_FUNCTION__                          \
                            format:_format,                                     \
                                ## __VA_ARGS__];                                \
     [_lcl_logger_pool release];                                                \
 }
-#endif
 

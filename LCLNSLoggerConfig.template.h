@@ -36,6 +36,15 @@
     <UniquePrefix>LCLNSLogger
 #endif
 
-// Tell LCLNSLogger to prefix the log message with the current function name.
-#define _LCLNSLogger_PrefixLogMessageWithFunctionName /* (1 or 0) */           \
-    1
+// Tell LCLNSLogger whether it should show file names.
+#define _LCLNSLogger_ShowFileNames /* (BOOL) */                                \
+    YES
+
+// Tell LCLNSLogger whether it should show line numbers.
+#define _LCLNSLogger_ShowLineNumbers /* (BOOL) */                              \
+    YES
+
+// Tell LCLNSLogger whether it should show function names.
+#define _LCLNSLogger_ShowFunctionNames /* (BOOL) */                            \
+    YES
+
