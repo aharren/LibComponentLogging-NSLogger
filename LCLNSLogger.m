@@ -119,9 +119,17 @@ static BOOL _LCLNSLogger_showPrefx = NO;
     const BOOL bufferLocallyUntilConnection = YES;
     const BOOL browseBonjour = YES;
     const BOOL browseOnlyLocalDomains = YES;
+    const BOOL useSSL = NO;
+    
+    uint32_t options;
+    options |= logToConsole ? kLoggerOption_LogToConsole : 0;
+    options |= bufferLocallyUntilConnection ? kLoggerOption_BufferLogsUntilConnection : 0;
+    options |= browseBonjour ? kLoggerOption_BrowseBonjour : 0;
+    options |= browseOnlyLocalDomains ? kLoggerOption_BrowseOnlyLocalDomain : 0;
+    options |= useSSL ? kLoggerOption_UseSSL : 0;
     
     // configure the logger
-    LoggerSetOptions(_LCLNSLogger_logger, logToConsole, bufferLocallyUntilConnection, browseBonjour, browseOnlyLocalDomains);
+    LoggerSetOptions(_LCLNSLogger_logger, options);
     
     // activate the logger
     LoggerStart(_LCLNSLogger_logger);
