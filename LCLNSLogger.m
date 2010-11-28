@@ -75,9 +75,6 @@ static BOOL _LCLNSLogger_showLineNumber = NO;
 // YES, if the function name should be shown.
 static BOOL _LCLNSLogger_showFunctionName = NO;
 
-// YES, if the prefix should be shown.
-static BOOL _LCLNSLogger_showPrefx = NO;
-
 
 @implementation LCLNSLogger
 
@@ -107,9 +104,6 @@ static BOOL _LCLNSLogger_showPrefx = NO;
     
     // get whether we should show function names
     _LCLNSLogger_showFunctionName = (_LCLNSLogger_ShowFunctionNames);
-    
-    // calculate whether the prefix should be shown
-    _LCLNSLogger_showPrefx = _LCLNSLogger_showFileName || _LCLNSLogger_showLineNumber || _LCLNSLogger_showFunctionName;
     
     // create and remember the logger instance
     _LCLNSLogger_logger = LoggerInit();
@@ -150,7 +144,6 @@ static BOOL _LCLNSLogger_showPrefx = NO;
     const BOOL show_file = _LCLNSLogger_showFileName;
     const BOOL show_line = _LCLNSLogger_showLineNumber;
     const BOOL show_function = _LCLNSLogger_showFunctionName;
-    const BOOL show_prefix = _LCLNSLogger_showPrefx;
     
     // get file name from path
     const char *file_c = NULL;
@@ -158,34 +151,22 @@ static BOOL _LCLNSLogger_showPrefx = NO;
         file_c = (path_c != NULL) ? strrchr(path_c, '/') : NULL;
         file_c = (file_c != NULL) ? (file_c + 1) : (path_c);
     }
-    
-    // get line
-    char line_c[11];
-    if (show_line) {
-        snprintf(line_c, sizeof(line_c), "%u", line);
-        line_c[sizeof(line_c) - 1] = '\0';
-    }
-    
-    // create message with prefix
-    va_list args;
-    va_start(args, format);
-    NSString *message = [[[NSString alloc] initWithFormat:format arguments:args] autorelease];
-    va_end(args);
-    
+
     // get domain
     NSString *domain = _LCLNSLogger_identifier[component];
     
     // write log message
-    LogMessageTo(_LCLNSLogger_logger, domain, (int)level, @"%s%s%s%s%s%s%s%@",
-                 /* %s */ show_file ? file_c : "",
-                 /* %s */ show_file ? ":" : "",
-                 /* %s */ show_line ? line_c : "",
-                 /* %s */ show_line ? ":" : "",
-                 /* %s */ show_function ? function_c : "",
-                 /* %s */ show_function ? ":" : "",
-                 /* %s */ show_prefix ? "\n" : "",
-                 /* %@ */ message
-                 );
+    va_list args;
+    va_start(args, format);
+    LogMessageToF_va(_LCLNSLogger_logger,
+                     file_c,
+                     (int)(show_line ? line : 0),
+                     show_function ? function_c : NULL,
+                     domain,
+                     (int)level,
+                     format,
+                     args);
+    va_end(args);
 }
 
 @end
