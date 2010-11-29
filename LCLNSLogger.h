@@ -25,7 +25,7 @@
 
 #define _LCLNSLOGGER_VERSION_MAJOR  0
 #define _LCLNSLOGGER_VERSION_MINOR  9
-#define _LCLNSLOGGER_VERSION_BUILD  3
+#define _LCLNSLOGGER_VERSION_BUILD  4
 #define _LCLNSLOGGER_VERSION_SUFFIX "-dev"
 
 //
@@ -47,6 +47,21 @@
 //
 // - Show function names in the log messages? (type BOOL)
 //   #define _LCLNSLogger_ShowFunctionNames <definition>
+//
+// - Set the NSLogger option LogToConsole? (type BOOL)
+//   #define _LCLNSLogger_LogToConolse <definition>
+//
+// - Set the NSLogger option BufferLocallyUntilConnection? (type BOOL)
+//   #define _LCLNSLogger_BufferLocallyUntilConnection <definition>
+//
+// - Set the NSLogger option BrowseBonjour? (type BOOL)
+//   #define _LCLNSLogger_BrowseBonjour <definition>
+//
+// - Set the NSLogger option BrowseOnlyLocalDomains? (type BOOL)
+//   #define _LCLNSLogger_BrowseOnlyLocalDomains <definition>
+//
+// - Set the NSLogger option UseSSL? (type BOOL)
+//   #define _LCLNSLogger_UseSSL <definition>
 //
 // For using LCLNSLogger with LibComponentLogging, simply add an
 //   #import "LCLNSLogger.h"

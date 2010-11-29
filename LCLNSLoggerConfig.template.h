@@ -48,3 +48,23 @@
 #define _LCLNSLogger_ShowFunctionNames /* (BOOL) */                            \
     YES
 
+// Tell LCLNSLogger whether it should set the NSLogger LogToConsole option.
+#define _LCLNSLogger_LogToConolse /* (BOOL) */                                 \
+    NO
+
+// Tell LCLNSLogger whether it should set the NSLogger BufferLocallyUntilConnection option.
+#define _LCLNSLogger_BufferLocallyUntilConnection /* (BOOL) */                 \
+    YES
+
+// Tell LCLNSLogger whether it should set the NSLogger BrowseBonjour option.
+#define _LCLNSLogger_BrowseBonjour /* (BOOL) */                                \
+    YES
+
+// Tell LCLNSLogger whether it should set the NSLogger BrowseOnlyLocalDomains option.
+#define _LCLNSLogger_BrowseOnlyLocalDomains /* (BOOL) */                       \
+    YES
+
+// Tell LCLNSLogger whether it should set the NSLogger UseSSL option.
+#define _LCLNSLogger_UseSSL /* (BOOL) */                                       \
+    YES
+

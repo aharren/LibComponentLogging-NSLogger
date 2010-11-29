@@ -49,6 +49,26 @@
 #error  '_LCLNSLogger_ShowFunctionNames' must be defined in LCLNSLoggerConfig.h
 #endif
 
+#ifndef _LCLNSLogger_LogToConolse
+#error  '_LCLNSLogger_LogToConolse' must be defined in LCLNSLoggerConfig.h
+#endif
+
+#ifndef _LCLNSLogger_BufferLocallyUntilConnection
+#error  '_LCLNSLogger_BufferLocallyUntilConnection' must be defined in LCLNSLoggerConfig.h
+#endif
+
+#ifndef _LCLNSLogger_BrowseBonjour
+#error  '_LCLNSLogger_BrowseBonjour' must be defined in LCLNSLoggerConfig.h
+#endif
+
+#ifndef _LCLNSLogger_BrowseOnlyLocalDomains
+#error  '_LCLNSLogger_BrowseOnlyLocalDomains' must be defined in LCLNSLoggerConfig.h
+#endif
+
+#ifndef _LCLNSLogger_UseSSL
+#error  '_LCLNSLogger_UseSSL' must be defined in LCLNSLoggerConfig.h
+#endif
+
 
 //
 // Fields.
@@ -108,21 +128,20 @@ static BOOL _LCLNSLogger_showFunctionName = NO;
     // create and remember the logger instance
     _LCLNSLogger_logger = LoggerInit();
     
-    // get configuration
-    const BOOL logToConsole = NO;
-    const BOOL bufferLocallyUntilConnection = YES;
-    const BOOL browseBonjour = YES;
-    const BOOL browseOnlyLocalDomains = YES;
-    const BOOL useSSL = NO;
+    // get configuration options for the logger
+    const BOOL logToConsole = (_LCLNSLogger_LogToConolse);
+    const BOOL bufferLocallyUntilConnection = (_LCLNSLogger_BufferLocallyUntilConnection);
+    const BOOL browseBonjour = (_LCLNSLogger_BrowseBonjour);
+    const BOOL browseOnlyLocalDomains = (_LCLNSLogger_BrowseOnlyLocalDomains);
+    const BOOL useSSL = (_LCLNSLogger_UseSSL);
     
-    uint32_t options;
+    // configure the logger
+    uint32_t options = 0;
     options |= logToConsole ? kLoggerOption_LogToConsole : 0;
     options |= bufferLocallyUntilConnection ? kLoggerOption_BufferLogsUntilConnection : 0;
     options |= browseBonjour ? kLoggerOption_BrowseBonjour : 0;
     options |= browseOnlyLocalDomains ? kLoggerOption_BrowseOnlyLocalDomain : 0;
     options |= useSSL ? kLoggerOption_UseSSL : 0;
-    
-    // configure the logger
     LoggerSetOptions(_LCLNSLogger_logger, options);
     
     // activate the logger
