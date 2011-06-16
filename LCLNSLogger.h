@@ -49,7 +49,7 @@
 //   #define _LCLNSLogger_ShowFunctionNames <definition>
 //
 // - Set the NSLogger option LogToConsole? (type BOOL)
-//   #define _LCLNSLogger_LogToConolse <definition>
+//   #define _LCLNSLogger_LogToConsole <definition>
 //
 // - Set the NSLogger option BufferLocallyUntilConnection? (type BOOL)
 //   #define _LCLNSLogger_BufferLocallyUntilConnection <definition>
