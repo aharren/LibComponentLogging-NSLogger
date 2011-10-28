@@ -108,6 +108,11 @@
 @end
 
 
+//
+// Integration with LibComponentLogging Core.
+//
+
+
 // Define the _lcl_logger macro which integrates LCLNSLogger as a logging
 // back-end for LibComponentLogging.
 #define _lcl_logger(_component, _level, _format, ...) {                        \
