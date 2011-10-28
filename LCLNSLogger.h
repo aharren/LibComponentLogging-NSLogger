@@ -113,10 +113,24 @@
 //
 
 
+// ARC/non-ARC autorelease pool
+#if __has_feature(objc_arc)
+#define _lcl_logger_autoreleasepool_begin                                      \
+    @autoreleasepool {
+#define _lcl_logger_autoreleasepool_end                                        \
+    }
+#else
+#define _lcl_logger_autoreleasepool_begin                                      \
+    NSAutoreleasePool *_lcl_logger_autoreleasepool = [[NSAutoreleasePool alloc] init];
+#define _lcl_logger_autoreleasepool_end                                        \
+    [_lcl_logger_autoreleasepool release];
+#endif
+
+
 // Define the _lcl_logger macro which integrates LCLNSLogger as a logging
 // back-end for LibComponentLogging.
 #define _lcl_logger(_component, _level, _format, ...) {                        \
-    NSAutoreleasePool *_lcl_logger_pool = [[NSAutoreleasePool alloc] init];    \
+    _lcl_logger_autoreleasepool_begin                                          \
     [LCLNSLogger logWithComponent:_component                                   \
                             level:_level                                       \
                              path:__FILE__                                     \
@@ -124,6 +138,6 @@
                          function:__PRETTY_FUNCTION__                          \
                            format:_format,                                     \
                                ## __VA_ARGS__];                                \
-    [_lcl_logger_pool release];                                                \
+    _lcl_logger_autoreleasepool_end                                            \
 }
 
